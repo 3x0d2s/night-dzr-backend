@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS Users (
 	games_played INTEGER NOT NULL,
 	win_games INTEGER NOT NULL,
 	is_organizer BOOLEAN NOT NULL DEFAULT(false),
-	team_id INTEGER DEFAULT(NULL),
+	team_id BIGINT DEFAULT(NULL),
 	FOREIGN KEY (team_id) REFERENCES Teams(id) ON DELETE SET DEFAULT
 );
 
@@ -30,8 +30,8 @@ CREATE TABLE IF NOT EXISTS Tasks (
 	mystery_of_place TEXT NOT NULL,
 	place TEXT NOT NULL,
 	answer VARCHAR(16) NOT NULL,
-	author_id BIGINT NOT NULL,
-	FOREIGN KEY (author_id) REFERENCES Users(id) ON DELETE CASCADE
+	author_id BIGINT DEFAULT(NULL),
+	FOREIGN KEY (author_id) REFERENCES Users(id) ON DELETE SET DEFAULT
 );
 
 -- Таблица: Games
