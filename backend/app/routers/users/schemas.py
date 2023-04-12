@@ -7,10 +7,6 @@ class UserBase(BaseModel):
     patronymic: str
     email: EmailStr
     phone_number: constr(min_length=11, max_length=11)
-    games_played: int
-    win_games: int
-    is_organizer: bool
-    team_id: int | None
 
 
 class UserCreate(UserBase):
@@ -19,6 +15,10 @@ class UserCreate(UserBase):
 
 class User(UserBase):
     id: int
+    games_played: int
+    win_games: int
+    is_organizer: bool
+    team_id: int | None
 
     class Config:
         orm_mode = True
