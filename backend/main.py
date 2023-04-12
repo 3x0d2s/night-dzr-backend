@@ -1,9 +1,9 @@
 from fastapi import FastAPI
 # from app.security import security
-from app.routers import users
+from app.routers.users import users
 
 app = FastAPI(
-    title="NigthDozor_Backend",
+    title="NightDozor_Backend",
     description="Backend-часть сервиса для проведения игры Ночной Дозор.",
     version="alpha-0.0.1"
 )
