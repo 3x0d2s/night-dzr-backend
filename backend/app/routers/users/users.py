@@ -10,6 +10,11 @@ models.Base.metadata.create_all(bind=engine)
 router = APIRouter(tags=["Users"])
 
 
+@router.get("/api/users", response_model=schemas.User, summary="Get User")
+def get_user(user_id: Annotated[int, Query(alias="id")], db: Session = Depends(get_db)):
+    return crud.get_user(db, user_id)
+
+
 @router.post("/api/users", response_model=schemas.User, summary="Register User")
 def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     check = crud.check_email_in_users(db, email=user.email)
@@ -19,11 +24,6 @@ def create_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     if check:
         raise HTTPException(status_code=400, detail="Phone number already registered.")
     return crud.create_user(db=db, user=user)
-
-
-@router.get("/api/users", response_model=schemas.User, summary="Get User")
-def get_user(user_id: Annotated[int, Query(alias="id")], db: Session = Depends(get_db)):
-    return crud.get_user(db, user_id)
 
 
 @router.delete("/api/users", response_model=schemas.User, summary="Delete User")
