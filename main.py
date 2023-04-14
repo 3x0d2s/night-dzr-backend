@@ -1,7 +1,9 @@
 from fastapi import FastAPI
 from app.security import security
 from app.routers.users import users
+from app.sql.database import Base, engine
 
+Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title="NightDozor_Backend",
     description="Backend-часть сервиса для проведения игры Ночной Дозор.",

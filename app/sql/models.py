@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, Integer, String, BigInteger, null
+from sqlalchemy import Boolean, Column, Integer, String, BigInteger
 from app.sql.database import Base
 
 

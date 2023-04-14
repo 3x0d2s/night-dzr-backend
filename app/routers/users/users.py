@@ -7,11 +7,9 @@ from jose import JWTError, jwt
 from pydantic import BaseModel
 #
 from app.data.config_reader import config
-from app.sql import models
 from app.routers.users import crud, schemas
-from app.sql.database import engine, get_db
+from app.sql.database import get_db
 
-models.Base.metadata.create_all(bind=engine)
 router = APIRouter(tags=["Users"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

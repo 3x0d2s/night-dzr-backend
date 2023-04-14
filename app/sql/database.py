@@ -1,14 +1,14 @@
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.ext.declarative import declarative_base
 from app.data.config_reader import config
 
 SQLALCHEMY_DATABASE_URL = "postgresql://{user_name}:{user_password}@{host}:{port}/{db_name}".format(
-    user_name=config.POSTGRES_USERNAME,
-    user_password=config.POSTGRES_PASSWORD.get_secret_value(),
-    host=config.POSTGRES_HOST,
-    port=config.POSTGRES_PORT,
-    db_name=config.POSTGRES_DB_NAME
+     user_name=config.POSTGRES_USERNAME,
+     user_password=config.POSTGRES_PASSWORD.get_secret_value(),
+     host=config.POSTGRES_HOST,
+     port=config.POSTGRES_PORT,
+     db_name=config.POSTGRES_DB_NAME
 )
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
