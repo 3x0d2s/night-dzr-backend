@@ -16,7 +16,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="NightDozor_Backend",
     description="Backend-часть сервиса для проведения игры Ночной Дозор.",
-    version="alpha-0.0.1",
+    version="alpha-0.0.2",
     lifespan=lifespan
 )
 app.include_router(security.router)

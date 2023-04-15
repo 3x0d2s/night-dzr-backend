@@ -2,15 +2,15 @@ from pydantic import BaseModel, EmailStr, constr
 
 
 class UserBase(BaseModel):
-    name: str
-    surname: str
-    patronymic: str
+    name: constr(min_length=1, max_length=32)
+    surname: constr(min_length=1, max_length=32)
+    patronymic: constr(min_length=1, max_length=32)
     email: EmailStr
     phone_number: constr(min_length=11, max_length=11)
 
 
 class UserCreate(UserBase):
-    password: str
+    password: constr(min_length=1, max_length=16)
 
 
 class User(UserBase):
