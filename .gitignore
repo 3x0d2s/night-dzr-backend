@@ -133,3 +133,6 @@ data/pgdata/
 
 # IDE
 .idea/
+
+# Docker
+docker-compose.yaml
