@@ -2,9 +2,9 @@ from typing import Annotated
 from datetime import datetime, timedelta
 #
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.security import OAuth2PasswordRequestForm
 from pydantic import BaseModel
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 from jose import jwt
 from passlib.context import CryptContext
 #
@@ -29,8 +29,8 @@ class Token(BaseModel):
     token_type: str
 
 
-def authenticate_user(db: Session, email: str, password: str):
-    user = crud.get_user_by_email(db, email)
+async def authenticate_user(db: AsyncSession, email: str, password: str):
+    user = await crud.get_user_by_email(db, email)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -53,8 +53,8 @@ def create_access_token(data: dict, expires_delta: timedelta | None = None):
 
 @router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-                                 db: Session = Depends(get_db)):
-    user = authenticate_user(db, form_data.username, form_data.password)
+                                 db: AsyncSession = Depends(get_db)):
+    user = await authenticate_user(db, form_data.username, form_data.password)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
