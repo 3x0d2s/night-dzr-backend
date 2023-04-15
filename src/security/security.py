@@ -8,9 +8,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from jose import jwt
 from passlib.context import CryptContext
 #
-from app.data.config_reader import config
-from app.routers.users import crud
-from app.sql.database import get_db
+from config.config_reader import config
+from src.routers.users import crud
+from src.sql.database import get_db
 
 router = APIRouter(tags=["Security"])
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

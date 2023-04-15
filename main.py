@@ -1,8 +1,8 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from app.security import security
-from app.routers.users import users
-from app.sql.database import Base, engine
+from src.security import security
+from src.routers.users import users
+from src.sql.database import Base, engine
 
 
 @asynccontextmanager

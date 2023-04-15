@@ -1,8 +1,8 @@
 from sqlalchemy import select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
-from app.sql import models
-from app.routers.users import schemas
+from src.sql import models
+from src.routers.users import schemas
 
 
 async def get_user(db: AsyncSession, user_id: int):

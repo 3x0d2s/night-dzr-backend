@@ -6,9 +6,9 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from jose import JWTError, jwt
 from pydantic import BaseModel
 #
-from app.data.config_reader import config
-from app.routers.users import crud, schemas
-from app.sql.database import get_db
+from config.config_reader import config
+from src.routers.users import crud, schemas
+from src.sql.database import get_db
 
 router = APIRouter(tags=["Users"])
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
