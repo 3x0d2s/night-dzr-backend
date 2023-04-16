@@ -1,5 +1,0 @@
-fastapi[all]==0.95.0
-python-jose[cryptography]
-passlib[bcrypt]
-sqlalchemy==2.0.9
-pydantic==1.10.7
