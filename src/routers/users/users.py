@@ -20,7 +20,7 @@ async def get_user(user_id: Annotated[int, Query(alias="id")],
     return await crud.get_user(db, user_id)
 
 
-@router.post("/api/users", response_model=schemas.User, summary="Register User")
+@router.post("/api/users", response_model=schemas.User, summary="Register User", status_code=status.HTTP_201_CREATED)
 async def create_user(user: Annotated[schemas.UserCreate, Body()],
                       db: Annotated[AsyncSession, Depends(get_db)]):
     check = await crud.check_email_in_users(db, email=user.email)
