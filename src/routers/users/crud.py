@@ -58,6 +58,9 @@ async def delete_user(db: AsyncSession, user_id: int):
     query = select(models.User).filter(models.User.id == user_id)
     user = await db.execute(query)
     user = user.scalars().first()
-    await db.delete(user)
-    await db.commit()
-    return user
+    if user:
+        await db.delete(user)
+        await db.commit()
+        return user
+    else:
+        return None
