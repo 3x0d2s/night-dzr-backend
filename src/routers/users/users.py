@@ -17,23 +17,22 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 @router.get("/api/users", response_model=schemas.User, summary="Get User", status_code=status.HTTP_200_OK)
 async def get_user(user_id: Annotated[int, Query(alias="id")],
                    db: Annotated[AsyncSession, Depends(get_db)]):
-    user = await crud.get_user(db, user_id)
-    if user:
-        return user
-    else:
+    user = await crud.get_user_data(db, user_id)
+    if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"User with id={user_id} not found.")
+    return user
 
 
 @router.post("/api/users", response_model=schemas.User, summary="Register User", status_code=status.HTTP_201_CREATED)
 async def create_user(user: Annotated[schemas.UserCreate, Body()],
                       db: Annotated[AsyncSession, Depends(get_db)]):
-    check = await crud.check_email_in_users(db, email=user.email)
-    if check:
+    email_exists = await crud.check_email_in_users(db, email=user.email)
+    if email_exists:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                             detail="Email already registered.")
-    check = await crud.check_phone_number_in_users(db, phone_number=user.phone_number)
-    if check:
+    phone_number_exists = await crud.check_phone_number_in_users(db, phone_number=user.phone_number)
+    if phone_number_exists:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                             detail="Phone number already registered.")
     return await crud.create_user(db=db, user=user)
@@ -43,11 +42,10 @@ async def create_user(user: Annotated[schemas.UserCreate, Body()],
 async def delete_user(user_id: Annotated[int, Query(alias="id")],
                       db: Annotated[AsyncSession, Depends(get_db)]):
     user = await crud.delete_user(db, user_id)
-    if user:
-        return user
-    else:
+    if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"User with id={user_id} not found.")
+    return user
 
 
 class TokenData(BaseModel):
@@ -69,12 +67,12 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)],
         token_data = TokenData(user_id=int(user_id))
     except JWTError:
         raise credentials_exception
-    user = await crud.get_user(db, user_id=token_data.user_id)
+    user = await crud.get_user_data(db, user_id=token_data.user_id)
     if user is None:
         raise credentials_exception
     return user
 
 
 @router.get("/api/users/me/", response_model=schemas.User, summary="Get Current User", status_code=status.HTTP_200_OK)
-async def get_users_me(current_user: Annotated[schemas.User, Depends(get_current_user)]):
+async def get_user_by_token(current_user: Annotated[schemas.User, Depends(get_current_user)]):
     return current_user

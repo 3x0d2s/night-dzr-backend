@@ -13,15 +13,17 @@ from src.routers.users import crud
 from src.sql.database import get_db
 
 router = APIRouter(tags=["Security"])
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def verify_password(plain_password, hashed_password):
-    return pwd_context.verify(plain_password, hashed_password)
+    return CryptContext(schemes=["bcrypt"],
+                        deprecated="auto").verify(plain_password,
+                                                  hashed_password)
 
 
 def get_password_hash(password):
-    return pwd_context.hash(password)
+    return CryptContext(schemes=["bcrypt"],
+                        deprecated="auto").hash(password)
 
 
 class Token(BaseModel):
@@ -38,8 +40,8 @@ async def authenticate_user(db: AsyncSession, email: str, password: str):
     return user
 
 
-def create_access_token(data: dict, expires_delta: timedelta | None = None):
-    to_encode = data.copy()
+def create_access_token(token_data: dict, expires_delta: timedelta | None = None):
+    to_encode = token_data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
@@ -62,6 +64,6 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
             headers={"WWW-Authenticate": "Bearer"},
         )
     access_token_expires = timedelta(minutes=config.ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(data={"sub": str(user.id)},
+    access_token = create_access_token(token_data={"sub": str(user.id)},
                                        expires_delta=access_token_expires)
     return {"access_token": access_token, "token_type": "bearer"}

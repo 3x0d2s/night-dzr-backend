@@ -1,8 +1,8 @@
 from conftest import AsyncClient
 
 # TODO: добавить тесты с невалидными данными
-user_id = 0
-token = "tmp"
+user_id: int = ...
+token: str = ...
 
 
 async def test_create_user(ac: AsyncClient):
@@ -33,7 +33,7 @@ async def test_auth(ac: AsyncClient):
     token = response.json()["access_token"]
 
 
-async def test_get_users_me(ac: AsyncClient):
+async def test_get_user_by_token(ac: AsyncClient):
     response = await ac.get(
         url="/api/users/me/",
         headers={"accept": "application/json",

@@ -5,7 +5,8 @@ from src.sql import models
 from src.routers.users import schemas
 
 
-async def get_user(db: AsyncSession, user_id: int):
+async def get_user_data(db: AsyncSession, user_id: int):
+    """ Возвращает данные юзера.  """
     query = select(models.User).filter(models.User.id == user_id)
     result = await db.execute(query)
     await db.commit()
@@ -31,22 +32,16 @@ async def check_phone_number_in_users(db: AsyncSession, phone_number: str):
 
 
 async def get_user_by_email(db: AsyncSession, email: str):
+    """ Возвращает данные юзера по email.  """
     query = select(models.User).filter(models.User.email == email)
     result = await db.execute(query)
     await db.commit()
     return result.scalars().first()
 
 
-async def get_users(db: AsyncSession, skip: int = 0, limit: int = 100):
-    query = select(models.User).offset(skip).limit(limit)
-    result = await db.execute(query)
-    await db.commit()
-    return result.scalars().all()
-
-
 async def create_user(db: AsyncSession, user: schemas.UserCreate):
-    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")  # TODO: убрать костыль
-    hashed_password = pwd_context.hash(user.password)
+    """ Создаёт запись юзера в БД.  """
+    hashed_password = CryptContext(schemes=["bcrypt"], deprecated="auto").hash(user.password)
     db_user = models.User(**user.dict(exclude={"password"}), hashed_password=hashed_password)
     db.add(db_user)
     await db.commit()
@@ -55,6 +50,7 @@ async def create_user(db: AsyncSession, user: schemas.UserCreate):
 
 
 async def delete_user(db: AsyncSession, user_id: int):
+    """ Удаляет запись юзера из БД.  """
     query = select(models.User).filter(models.User.id == user_id)
     user = await db.execute(query)
     user = user.scalars().first()
