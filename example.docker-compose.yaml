@@ -6,8 +6,7 @@ services:
     container_name: "PostgreSQL-DB"
     restart: always
     volumes:
-      - ./schema:/docker-entrypoint-initdb.d
-      - ./pgdata:/var/lib/postgresql/data
+      - ./pgdata:/var/lib/postgresql/config
     ports:
       - 5432:5432
     environment:
