@@ -3,8 +3,7 @@ from pydantic import BaseSettings, SecretStr
 
 class Settings(BaseSettings):
     SECURITY_KEY: SecretStr
-    TOKEN_ALGORITHM: str
-    ACCESS_TOKEN_EXPIRE_MINUTES: int
+    ACCESS_TOKEN_EXPIRE_SECONDS: int
 
     POSTGRES_USERNAME: str
     POSTGRES_PASSWORD: SecretStr

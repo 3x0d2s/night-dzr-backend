@@ -3,7 +3,7 @@ from typing import AsyncGenerator
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-from src.sql.database import Base, get_db
+from src.sql.db import Base, get_db_session
 from config.config_reader import config
 from main import app
 
@@ -23,7 +23,7 @@ async def override_get_db():
         yield async_session
 
 
-app.dependency_overrides[get_db] = override_get_db
+app.dependency_overrides[get_db_session] = override_get_db
 
 
 @pytest.fixture(autouse=True, scope="session")

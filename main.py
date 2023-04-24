@@ -1,8 +1,8 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from src.security import security
-from src.routers.users import users
-from src.sql.database import Base, engine
+from src.sql.db import Base, engine
+from src.auth.auth import auth_backend, fastapi_users
+from src.schemas.user import UserRead, UserCreate, UserUpdate
 
 
 @asynccontextmanager
@@ -15,14 +15,22 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="NightDozor_Backend",
-    description="Backend-часть сервиса для проведения игры Ночной Дозор.",
-    version="alpha-0.0.2",
+    description="Backend сервиса для проведения игры Ночной Дозор.",
+    version="dev-0.1.0",
     lifespan=lifespan
 )
-app.include_router(security.router)
-app.include_router(users.router)
-
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World, i'm backend!"}
+app.include_router(
+    fastapi_users.get_auth_router(auth_backend),
+    prefix="/auth/jwt",
+    tags=["auth"],
+)
+app.include_router(
+    fastapi_users.get_register_router(UserRead, UserCreate),
+    prefix="/auth",
+    tags=["auth"],
+)
+app.include_router(
+    fastapi_users.get_users_router(UserRead, UserUpdate),
+    prefix="/users",
+    tags=["users"],
+)
