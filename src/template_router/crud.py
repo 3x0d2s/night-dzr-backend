@@ -1,7 +1,7 @@
 from sqlalchemy import select, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 from passlib.context import CryptContext
-from src.models.user import User
+from src.auth.models import User
 
 
 async def get_user_data(db: AsyncSession, user_id: int):

@@ -1,8 +1,8 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from src.sql.db import Base, engine
+from src.database import Base, engine
 from src.auth.auth import auth_backend, fastapi_users
-from src.schemas.user import UserRead, UserCreate, UserUpdate
+from src.auth.schemas import UserRead, UserCreate, UserUpdate
 
 
 @asynccontextmanager

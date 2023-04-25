@@ -1,7 +1,7 @@
 from fastapi_users.db import SQLAlchemyBaseUserTable
 from sqlalchemy import Boolean, Integer, String, BigInteger
 from sqlalchemy.orm import Mapped, mapped_column
-from src.sql.db import Base
+from src.database import Base
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):
@@ -20,5 +20,3 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
-
-

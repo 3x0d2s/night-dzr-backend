@@ -2,9 +2,9 @@ from fastapi_users.authentication import BearerTransport
 from fastapi_users.authentication import JWTStrategy
 from fastapi_users.authentication import AuthenticationBackend
 from fastapi_users import FastAPIUsers
-from config.config_reader import config
+from src.config import config
 from src.auth.manager import get_user_manager
-from src.models.user import User
+from src.auth.models import User
 
 
 def get_jwt_strategy() -> JWTStrategy:

@@ -3,9 +3,9 @@ from typing import AsyncGenerator
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
-from src.sql.db import Base, get_db_session
-from config.config_reader import config
-from main import app
+from src.database import Base, get_db_session
+from src.config import config
+from src.main import app
 
 SQLALCHEMY_DATABASE_URL = "postgresql+asyncpg://{user_name}:{user_password}@{host}:{port}/{db_name}".format(
     user_name=config.POSTGRES_USERNAME,
