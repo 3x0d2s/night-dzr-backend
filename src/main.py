@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from src.database import Base, engine
 from src.auth.auth import auth_backend, fastapi_users
 from src.auth.schemas import UserRead, UserCreate, UserUpdate
+from src.teams.router import router as teams_router
 
 
 @asynccontextmanager
@@ -33,4 +34,8 @@ app.include_router(
     fastapi_users.get_users_router(UserRead, UserUpdate),
     prefix="/users",
     tags=["users"],
+)
+app.include_router(
+    teams_router,
+    tags=["teams"],
 )
