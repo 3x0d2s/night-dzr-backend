@@ -15,7 +15,6 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     hashed_password: Mapped[str] = mapped_column(String(length=1024), nullable=False)
     games_played: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     win_games: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    team_id: Mapped[int] = mapped_column(ForeignKey("Team.id"), nullable=True)
     # FastAPI-Users defaults:
     is_active: Mapped[bool] = mapped_column(Boolean, default=True, nullable=False)
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)

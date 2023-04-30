@@ -11,6 +11,7 @@ class TeamCreate(TeamBase):
 
 class TeamRead(TeamBase):
     id: int
+    owner_id: int
     name: str
     games_played: int
     win_games: int
