@@ -2,7 +2,8 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Path, Body, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from src.database import get_db_session
-from src.teams.shemas import TeamCreate, TeamRead
+from src.teams.shemas import TeamCreate, TeamRead, TeamUpdate
+from src.teams.models import Team as TeamModel
 from src.teams import crud as teams_crud
 from src.auth.auth import current_user
 from src.auth.schemas import UserRead
@@ -49,3 +50,20 @@ async def delete_team(team_id: Annotated[int, Path()],
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail=f"You do not have access rights to the team with id={team_id}")
     return await teams_crud.delete_team(db, team)
+
+
+@router.patch("/teams/{team_id}", summary="Update Team By Id",
+              response_model=TeamRead, status_code=status.HTTP_200_OK)
+async def update_team(team_id: Annotated[int, Path()],
+                      db: Annotated[AsyncSession, Depends(get_db_session)],
+                      user: Annotated[UserRead, Depends(current_user)],
+                      new_team_data: Annotated[TeamUpdate, Body()]):
+    team: TeamModel = await teams_crud.get_team_data(db, team_id)
+    if not team:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"Team with id={team_id} not found.")
+    if user.is_superuser is False and team.owner_id != user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail=f"You do not have access rights to the team with id={team_id}")
+    update_data = new_team_data.dict(exclude_unset=True)
+    return await teams_crud.update_team(db, team, update_data)

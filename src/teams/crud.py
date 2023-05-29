@@ -32,3 +32,10 @@ async def delete_team(db: AsyncSession, team: Team):
     await db.delete(team)
     await db.commit()
     return team
+
+
+async def update_team(db: AsyncSession, team: Team, update_data: dict):
+    for key, value in update_data.items():
+        setattr(team, key, value)
+    await db.commit()
+    return team
