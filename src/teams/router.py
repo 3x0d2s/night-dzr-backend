@@ -129,7 +129,7 @@ async def add_user_to_team(team_id: Annotated[int, Path()],
     return team.users
 
 
-@router.get("/teams/byuser/{user_id}", summary="",
+@router.get("/teams/byuser/{user_id}", summary="Get team by user",
             response_model=TeamRead, status_code=status.HTTP_200_OK)
 async def get_team(user_id: Annotated[int, Path()],
                    db: Annotated[AsyncSession, Depends(get_db_session)],

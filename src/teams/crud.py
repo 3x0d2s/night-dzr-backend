@@ -38,6 +38,7 @@ async def delete_team(db: AsyncSession, team: Team):
 
 
 async def update_team(db: AsyncSession, team: Team, update_data: dict):
+    """ Обновляет информация о команде. """
     for key, value in update_data.items():
         setattr(team, key, value)
     await db.commit()
@@ -45,6 +46,7 @@ async def update_team(db: AsyncSession, team: Team, update_data: dict):
 
 
 async def add_user_to_team(db: AsyncSession, team: Team, user_id: int):
+    """ Добавляет пользователя в команду.  """
     query = select(User).filter(User.id == user_id)
     result = await db.execute(query)
     user = result.scalars().first()
@@ -53,6 +55,7 @@ async def add_user_to_team(db: AsyncSession, team: Team, user_id: int):
 
 
 async def remove_user_from_team(db: AsyncSession, team: Team, user_id: int):
+    """ Удаляет пользователя из команды. """
     flag = False
     for team_user in team.users:
         if team_user.id == user_id:
