@@ -1,14 +1,7 @@
-from sqlalchemy import Integer, String, ForeignKey, Table, Column
+from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from src.database import Base
-from src.auth.models import User
-
-association_table = Table(
-    "TeamUsers",
-    Base.metadata,
-    Column("team_id", ForeignKey("Team.id")),
-    Column("user_id", ForeignKey("User.id")),
-)
+from src.database.db import Base
+from src.database.association_tables import AT_TeamUsers
 
 
 class Team(Base):
@@ -18,4 +11,4 @@ class Team(Base):
     name: Mapped[str] = mapped_column(String(length=32), nullable=False)
     games_played: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     win_games: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
-    users: Mapped[list[User]] = relationship(lazy="raise", secondary=association_table)
+    users: Mapped[list["User"]] = relationship(lazy="raise", secondary=AT_TeamUsers, back_populates="team")

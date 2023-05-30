@@ -61,3 +61,10 @@ async def remove_user_from_team(db: AsyncSession, team: Team, user_id: int):
     if not flag:
         raise TeamsUserNotFound
     await db.commit()
+
+
+async def get_user_data(db: AsyncSession, user_id: int) -> User:
+    """ Возвращает данные пользователя вместе с командой.  """
+    query = select(User).filter(User.id == user_id).options(selectinload(User.team))
+    result = await db.execute(query)
+    return result.scalars().first()

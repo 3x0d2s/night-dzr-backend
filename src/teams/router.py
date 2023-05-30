@@ -1,7 +1,7 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Path, Body, status, Query
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.database import get_db_session
+from src.database.db import get_db_session
 from src.teams.shemas import TeamCreate, TeamRead, TeamUpdate
 from src.teams.models import Team as TeamModel
 from src.teams import crud as teams_crud
@@ -127,3 +127,18 @@ async def add_user_to_team(team_id: Annotated[int, Path()],
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"The user with ID={user_id} was not found in the team with ID={team_id}")
     return team.users
+
+
+@router.get("/teams/byuser/{user_id}", summary="",
+            response_model=TeamRead, status_code=status.HTTP_200_OK)
+async def get_team(user_id: Annotated[int, Path()],
+                   db: Annotated[AsyncSession, Depends(get_db_session)],
+                   user: Annotated[UserRead, Depends(current_user)]):
+    ans_user = await teams_crud.get_user_data(db, user_id)
+    if user.is_superuser is False and user_id != user.id:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail=f"You have no rights to this information.")
+    if ans_user is None or ans_user.team is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"The user or the user's team were not found.")
+    return ans_user.team
