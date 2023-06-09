@@ -1,6 +1,6 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
-from config.config_reader import config
+from src.config import config
 
 SQLALCHEMY_DATABASE_URL = "postgresql+asyncpg://{user_name}:{user_password}@{host}:{port}/{db_name}".format(
     user_name=config.POSTGRES_USERNAME,

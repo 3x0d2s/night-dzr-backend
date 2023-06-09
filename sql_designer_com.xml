@@ -37,7 +37,7 @@
 		<type label="SET" length="1" sql="SET" quote=""/>
 		<type label="Bit" length="0" sql="bit" quote=""/>
 	</group>
-</datatypes><table x="501" y="301" name="users">
+</datatypes><table x="401" y="301" name="user">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -56,7 +56,7 @@
 <row name="phone_number" null="0" autoincrement="0">
 <datatype>VARCHAR(11)</datatype>
 <default>'NULL'</default></row>
-<row name="password" null="0" autoincrement="0">
+<row name="hashed_password" null="0" autoincrement="0">
 <datatype>VARCHAR(32)</datatype>
 </row>
 <row name="games_played" null="0" autoincrement="0">
@@ -70,16 +70,28 @@
 <default>'0'</default></row>
 <row name="team_id" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
-<default>NULL</default><relation table="teams" row="id" />
-</row>
+<default>NULL</default></row>
+<row name="is_active" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="is_superuser" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="is_verified" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
 <key type="PRIMARY" name="">
 <part>id</part>
 </key>
 </table>
-<table x="752" y="501" name="teams">
+<table x="834" y="451" name="team">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
+<row name="owner_id" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="user" row="id" />
+</row>
 <row name="name" null="0" autoincrement="0">
 <datatype>VARCHAR(32)</datatype>
 </row>
@@ -110,7 +122,7 @@
 <part>id</part>
 </key>
 </table>
-<table x="752" y="252" name="tasks">
+<table x="702" y="201" name="tasks">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -126,9 +138,9 @@
 <row name="answer" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
-<row name="author_id" null="1" autoincrement="0">
+<row name="owner_id" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
-<default>NULL</default><relation table="users" row="id" />
+<default>NULL</default><relation table="user" row="id" />
 </row>
 <key type="PRIMARY" name="">
 <part>id</part>
@@ -144,7 +156,7 @@
 </row>
 <row name="team_id" null="0" autoincrement="0">
 <datatype>INTEGER</datatype>
-<relation table="teams" row="id" />
+<relation table="team" row="id" />
 </row>
 <key type="PRIMARY" name="">
 <part>id</part>
@@ -161,6 +173,22 @@
 <row name="task_id" null="0" autoincrement="0">
 <datatype>INTEGER</datatype>
 <relation table="tasks" row="id" />
+</row>
+<key type="PRIMARY" name="">
+<part>id</part>
+</key>
+</table>
+<table x="602" y="552" name="TeamUsers">
+<row name="id" null="1" autoincrement="1">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="user_id" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="user" row="id" />
+</row>
+<row name="team_id" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="team" row="id" />
 </row>
 <key type="PRIMARY" name="">
 <part>id</part>

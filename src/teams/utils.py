@@ -1,0 +1,3 @@
+
+class TeamsUserNotFound(Exception):
+    pass

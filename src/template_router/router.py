@@ -1,9 +1,9 @@
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, Body, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from src.sql.crud import user as user_crud
-from src.schemas import user as user_schemes
-from src.sql.db import get_db_session
+from src.template_router import crud as user_crud
+from src.auth import schemas as user_schemes
+from src.database import get_db_session
 from src.auth.auth import current_user
 router = APIRouter(tags=["Users"])
 

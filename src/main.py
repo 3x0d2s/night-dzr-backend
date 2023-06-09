@@ -1,14 +1,13 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from src.sql.db import Base, engine
+from src.database.db import engine
 from src.auth.auth import auth_backend, fastapi_users
-from src.schemas.user import UserRead, UserCreate, UserUpdate
+from src.auth.schemas import UserRead, UserCreate, UserUpdate
+from src.teams.router import router as teams_router
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
     yield
     await engine.dispose()
 
@@ -33,4 +32,8 @@ app.include_router(
     fastapi_users.get_users_router(UserRead, UserUpdate),
     prefix="/users",
     tags=["users"],
+)
+app.include_router(
+    teams_router,
+    tags=["teams"],
 )

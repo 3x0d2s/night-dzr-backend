@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     POSTGRES_USERNAME: str
     POSTGRES_PASSWORD: SecretStr
     POSTGRES_HOST: str
-    POSTGRES_PORT: int
+    POSTGRES_PORT: str
     POSTGRES_DB_NAME: str
     POSTGRES_DB_NAME_TEST: str
 

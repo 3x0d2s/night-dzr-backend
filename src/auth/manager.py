@@ -1,11 +1,10 @@
 from typing import Optional, Union
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, IntegerIDMixin, InvalidPasswordException
-from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
-from sqlalchemy.ext.asyncio import AsyncSession
-from src.models.user import User
-from src.schemas.user import UserCreate
-from src.sql.db import get_db_session
+
+from src.auth.utils import get_user_db
+from src.auth.models import User
+from src.auth.schemas import UserCreate
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
@@ -30,10 +29,6 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
             raise InvalidPasswordException(
                 reason="Password should not contain e-mail"
             )
-
-
-async def get_user_db(session: AsyncSession = Depends(get_db_session)):
-    yield SQLAlchemyUserDatabase(session, User)
 
 
 async def get_user_manager(user_db=Depends(get_user_db)):

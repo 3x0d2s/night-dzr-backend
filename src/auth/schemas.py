@@ -29,7 +29,6 @@ class UserCreate(schemas.BaseUserCreate):
 class UserRead(UserBase):
     games_played: int
     win_games: int
-    team_id: int | None
 
 
 class UserUpdate(schemas.BaseUserUpdate):
@@ -41,7 +40,6 @@ class UserUpdate(schemas.BaseUserUpdate):
     email: EmailStr | None
     games_played: int | None
     win_games: int | None
-    team_id: int | None
     is_active: bool | None
     is_superuser: bool | None
     is_verified: bool | None
