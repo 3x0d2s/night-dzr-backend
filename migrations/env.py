@@ -8,6 +8,7 @@ from src.config import config as cf
 from src.database.association_tables import AT_TeamUsers
 from src.auth.models import User
 from src.teams.models import Team
+from src.tasks.models import Task
 from src.database.db import Base
 
 # this is the Alembic Config object, which provides
