@@ -5,6 +5,7 @@ from src.auth.auth import auth_backend, fastapi_users
 from src.auth.schemas import UserRead, UserCreate, UserUpdate
 from src.teams.router import router as teams_router
 from src.tasks.router import router as tasks_router
+from src.games.router import router as games_router
 
 
 @asynccontextmanager
@@ -41,4 +42,8 @@ app.include_router(
 app.include_router(
     tasks_router,
     tags=["tasks"],
+)
+app.include_router(
+    games_router,
+    tags=["games"],
 )

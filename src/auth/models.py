@@ -21,3 +21,4 @@ class User(SQLAlchemyBaseUserTable[int], Base):
     is_verified: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
     team: Mapped["Team"] = relationship(lazy="raise", secondary=AT_TeamUsers, back_populates="users")
     tasks: Mapped[list["Task"]] = relationship(lazy="raise", back_populates="user")
+    games: Mapped[list["Game"]] = relationship(lazy="raise", back_populates="user")

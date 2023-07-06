@@ -5,10 +5,11 @@ from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 from src.config import config as cf
-from src.database.association_tables import AT_TeamUsers
+from src.database.association_tables import AT_TeamUsers, AT_GamesTeams, AT_GamesTasks
 from src.auth.models import User
 from src.teams.models import Team
 from src.tasks.models import Task
+from src.games.models import Game
 from src.database.db import Base
 
 # this is the Alembic Config object, which provides

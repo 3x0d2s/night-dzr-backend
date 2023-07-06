@@ -1,6 +1,7 @@
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.database.db import Base
+from src.database.association_tables import AT_GamesTasks
 
 
 class Task(Base):
@@ -12,3 +13,4 @@ class Task(Base):
     place: Mapped[str] = mapped_column(String, nullable=False)
     answer: Mapped[str] = mapped_column(String, nullable=False)
     user: Mapped["User"] = relationship(lazy="raise", back_populates="tasks")
+    games: Mapped[list["Game"]] = relationship(lazy="raise", secondary=AT_GamesTasks, back_populates="tasks")
