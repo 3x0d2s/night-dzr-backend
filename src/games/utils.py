@@ -5,3 +5,11 @@ class GamesTaskNotFound(Exception):
 
 class GamesTeamNotFound(Exception):
     pass
+
+
+class TeamNotFound(Exception):
+    pass
+
+
+class TaskNotFound(Exception):
+    pass

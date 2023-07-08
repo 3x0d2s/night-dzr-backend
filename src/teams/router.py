@@ -4,7 +4,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.database.db import get_db_session
 from src.teams.shemas import TeamCreate, TeamRead, TeamUpdate
 from src.teams.models import Team as TeamModel
-from src.teams import crud as teams_crud
+from src.teams.crud import TeamsCrud
 from src.auth.auth import current_user
 from src.auth.schemas import UserRead
 from src.teams.utils import TeamsUserNotFound
@@ -24,11 +24,15 @@ router = APIRouter()
 async def create_team(team_data: Annotated[TeamCreate, Body()],
                       db: Annotated[AsyncSession, Depends(get_db_session)],
                       user_request_data: Annotated[UserRead, Depends(current_user)]):
-    check = await teams_crud.check_team_name_in_db(db, team_data.name)
+    teams_crud = TeamsCrud(db)
+    check = await teams_crud.check_team_name_in_db(team_data.name)
     if check:
         raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                             detail=f"Team with name='{team_data.name}' already created.")
-    return await teams_crud.create_team(db, team_data, owner_id=user_request_data.id)
+    db_team = await teams_crud.create_team(team_data, owner_id=user_request_data.id)
+    await teams_crud.commit()
+    await teams_crud.refresh(db_team)
+    return db_team
 
 
 @router.get("/teams/{team_id}",
@@ -45,7 +49,8 @@ async def create_team(team_data: Annotated[TeamCreate, Body()],
 async def get_team(team_id: Annotated[int, Path()],
                    db: Annotated[AsyncSession, Depends(get_db_session)],
                    user_request_data: Annotated[UserRead, Depends(current_user)]):
-    team = await teams_crud.get_team_data(db, team_id)
+    teams_crud = TeamsCrud(db)
+    team = await teams_crud.get_team_data(team_id)
     if not team:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Team with id={team_id} not found.")
@@ -69,7 +74,8 @@ async def get_team(team_id: Annotated[int, Path()],
 async def get_team(user_id: Annotated[int, Query()],
                    db: Annotated[AsyncSession, Depends(get_db_session)],
                    user_request_data: Annotated[UserRead, Depends(current_user)]):
-    ans_user = await teams_crud.get_user_data(db, user_id)
+    teams_crud = TeamsCrud(db)
+    ans_user = await teams_crud.get_user_data(user_id)
     if user_request_data.is_superuser is False and user_id != user_request_data.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail=f"You have no rights to this information.")
@@ -93,14 +99,16 @@ async def get_team(user_id: Annotated[int, Query()],
 async def delete_team(team_id: Annotated[int, Path()],
                       db: Annotated[AsyncSession, Depends(get_db_session)],
                       user_request_data: Annotated[UserRead, Depends(current_user)]):
-    team = await teams_crud.get_team_data(db, team_id)
+    teams_crud = TeamsCrud(db)
+    team = await teams_crud.get_team_data(team_id)
     if not team:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Team with id={team_id} not found.")
     if user_request_data.is_superuser is False and team.owner_id != user_request_data.id:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail=f"You do not have access rights to the team with id={team_id}")
-    await teams_crud.delete_team(db, team)
+    await teams_crud.delete_team(team)
+    await teams_crud.commit()
     return
 
 
@@ -119,7 +127,8 @@ async def update_team(team_id: Annotated[int, Path()],
                       db: Annotated[AsyncSession, Depends(get_db_session)],
                       user_request_data: Annotated[UserRead, Depends(current_user)],
                       new_team_data: Annotated[TeamUpdate, Body()]):
-    team: TeamModel = await teams_crud.get_team_data(db, team_id)
+    teams_crud = TeamsCrud(db)
+    team: TeamModel = await teams_crud.get_team_data(team_id)
     if not team:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Team with id={team_id} not found.")
@@ -127,7 +136,9 @@ async def update_team(team_id: Annotated[int, Path()],
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail=f"You do not have access rights to the team with id={team_id}")
     update_data = new_team_data.dict(exclude_unset=True)
-    return await teams_crud.update_team(db, team, update_data)
+    team = await teams_crud.update_team(team, update_data)
+    await teams_crud.commit()
+    return team
 
 
 @router.get("/teams/{team_id}/users",
@@ -144,7 +155,8 @@ async def update_team(team_id: Annotated[int, Path()],
 async def get_team(team_id: Annotated[int, Path()],
                    db: Annotated[AsyncSession, Depends(get_db_session)],
                    user_request_data: Annotated[UserRead, Depends(current_user)]):
-    team = await teams_crud.get_team_data(db, team_id)
+    teams_crud = TeamsCrud(db)
+    team = await teams_crud.get_team_data(team_id)
     if not team:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Team with id={team_id} not found.")
@@ -171,7 +183,8 @@ async def add_user_to_team(team_id: Annotated[int, Path()],
                            user_id: Annotated[int, Query()],
                            db: Annotated[AsyncSession, Depends(get_db_session)],
                            user_request_data: Annotated[UserRead, Depends(current_user)]):
-    team: TeamModel = await teams_crud.get_team_data(db, team_id)
+    teams_crud = TeamsCrud(db)
+    team: TeamModel = await teams_crud.get_team_data(team_id)
     if not team:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Team with id={team_id} not found.")
@@ -183,7 +196,8 @@ async def add_user_to_team(team_id: Annotated[int, Path()],
             raise HTTPException(status_code=status.HTTP_409_CONFLICT,
                                 detail=f"The user with ID={user_id} has already been "
                                        f"added to the team with ID={team_id}")
-    await teams_crud.add_user_to_team(db, team, user_id)
+    await teams_crud.add_user_to_team(team, user_id)
+    await teams_crud.commit()
     return team.users
 
 
@@ -202,7 +216,8 @@ async def remove_user_from_team(team_id: Annotated[int, Path()],
                                 user_id: Annotated[int, Path()],
                                 db: Annotated[AsyncSession, Depends(get_db_session)],
                                 user_request_data: Annotated[UserRead, Depends(current_user)]):
-    team: TeamModel = await teams_crud.get_team_data(db, team_id)
+    teams_crud = TeamsCrud(db)
+    team: TeamModel = await teams_crud.get_team_data(team_id)
     if not team:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"Team with id={team_id} not found.")
@@ -210,8 +225,10 @@ async def remove_user_from_team(team_id: Annotated[int, Path()],
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
                             detail=f"You do not have access rights to the team with id={team_id}")
     try:
-        await teams_crud.remove_user_from_team(db, team, user_id)
+        await teams_crud.remove_user_from_team(team, user_id)
     except TeamsUserNotFound:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"The user with ID={user_id} was not found in the team with ID={team_id}")
+    else:
+        await teams_crud.commit()
     return
