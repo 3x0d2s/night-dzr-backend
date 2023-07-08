@@ -1,7 +1,7 @@
 from sqlalchemy import Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from src.database.db import Base
-from src.database.association_tables import AT_TeamUsers
+from src.database.association_tables import AT_TeamUsers, AT_GamesTeams
 
 
 class Team(Base):
@@ -12,3 +12,5 @@ class Team(Base):
     games_played: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     win_games: Mapped[int] = mapped_column(Integer, nullable=False, default=0)
     users: Mapped[list["User"]] = relationship(lazy="raise", secondary=AT_TeamUsers, back_populates="team")
+    games: Mapped[list["Game"]] = relationship(lazy="raise", secondary=AT_GamesTeams,
+                                               back_populates="teams", order_by="Game.datetime_start")

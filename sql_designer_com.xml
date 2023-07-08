@@ -105,8 +105,14 @@
 <part>id</part>
 </key>
 </table>
-<table x="1252" y="381" name="games">
+<table x="1251" y="332" name="games">
 <row name="id" null="1" autoincrement="1">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="name" null="0" autoincrement="0">
+<datatype>VARCHAR(32)</datatype>
+</row>
+<row name="legend" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
 <row name="date_start" null="0" autoincrement="0">
@@ -115,14 +121,15 @@
 <row name="date_end" null="0" autoincrement="0">
 <datatype>DATETIME</datatype>
 </row>
-<row name="name" null="0" autoincrement="0">
-<datatype>VARCHAR(32)</datatype>
+<row name="owner_id" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="user" row="id" />
 </row>
 <key type="PRIMARY" name="">
 <part>id</part>
 </key>
 </table>
-<table x="702" y="201" name="tasks">
+<table x="701" y="152" name="tasks">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>

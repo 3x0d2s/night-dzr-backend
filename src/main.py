@@ -4,6 +4,8 @@ from src.database.db import engine
 from src.auth.auth import auth_backend, fastapi_users
 from src.auth.schemas import UserRead, UserCreate, UserUpdate
 from src.teams.router import router as teams_router
+from src.tasks.router import router as tasks_router
+from src.games.router import router as games_router
 
 
 @asynccontextmanager
@@ -15,7 +17,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="NightDozor_Backend",
     description="Backend сервиса для проведения игры Ночной Дозор.",
-    version="dev-0.1.0",
+    version="dev-0.3.0",
     lifespan=lifespan
 )
 app.include_router(
@@ -36,4 +38,12 @@ app.include_router(
 app.include_router(
     teams_router,
     tags=["teams"],
+)
+app.include_router(
+    tasks_router,
+    tags=["tasks"],
+)
+app.include_router(
+    games_router,
+    tags=["games"],
 )
