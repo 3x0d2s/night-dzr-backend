@@ -6,6 +6,7 @@ from src.auth.schemas import UserRead, UserCreate, UserUpdate
 from src.teams.router import router as teams_router
 from src.tasks.router import router as tasks_router
 from src.games.router import router as games_router
+from src.chat.router import router as chat_router
 
 
 @asynccontextmanager
@@ -46,4 +47,8 @@ app.include_router(
 app.include_router(
     games_router,
     tags=["games"],
+)
+app.include_router(
+    chat_router,
+    tags=["chat"],
 )

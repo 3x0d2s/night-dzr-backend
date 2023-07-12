@@ -37,7 +37,7 @@
 		<type label="SET" length="1" sql="SET" quote=""/>
 		<type label="Bit" length="0" sql="bit" quote=""/>
 	</group>
-</datatypes><table x="401" y="301" name="user">
+</datatypes><table x="52" y="300" name="user">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -68,9 +68,6 @@
 <row name="is_organizer" null="0" autoincrement="0">
 <datatype>CHAR</datatype>
 <default>'0'</default></row>
-<row name="team_id" null="1" autoincrement="0">
-<datatype>INTEGER</datatype>
-<default>NULL</default></row>
 <row name="is_active" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -84,7 +81,7 @@
 <part>id</part>
 </key>
 </table>
-<table x="833" y="451" name="team">
+<table x="484" y="450" name="team">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -105,7 +102,7 @@
 <part>id</part>
 </key>
 </table>
-<table x="1251" y="332" name="games">
+<table x="901" y="251" name="games">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -129,7 +126,7 @@
 <part>id</part>
 </key>
 </table>
-<table x="701" y="152" name="tasks">
+<table x="352" y="151" name="tasks">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -153,7 +150,7 @@
 <part>id</part>
 </key>
 </table>
-<table x="1001" y="471" name="GamesTeams">
+<table x="651" y="501" name="GamesTeams">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -169,7 +166,7 @@
 <part>id</part>
 </key>
 </table>
-<table x="1002" y="244" name="GamesTasks">
+<table x="653" y="243" name="GamesTasks">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -185,7 +182,7 @@
 <part>id</part>
 </key>
 </table>
-<table x="589" y="481" name="TeamUsers">
+<table x="240" y="480" name="TeamUsers">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
@@ -201,17 +198,13 @@
 <part>id</part>
 </key>
 </table>
-<table x="1002" y="651" name="Messages">
+<table x="1301" y="451" name="Message">
 <row name="id" null="1" autoincrement="1">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
-<row name="team_id" null="1" autoincrement="0">
+<row name="chat_id" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
-<default>NULL</default><relation table="team" row="id" />
-</row>
-<row name="game_id" null="1" autoincrement="0">
-<datatype>INTEGER</datatype>
-<default>NULL</default><relation table="games" row="id" />
+<default>NULL</default><relation table="Chat" row="id" />
 </row>
 <row name="user_id" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
@@ -226,13 +219,44 @@
 <row name="text" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
-<row name="media" null="1" autoincrement="0">
+<row name="media_id" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
-<default>NULL</default></row>
-<row name="is_reply" null="1" autoincrement="0">
-<datatype>INTEGER</datatype>
-<default>NULL</default></row>
+<default>NULL</default><relation table="Media" row="id" />
+</row>
 <row name="reply_to" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<key type="PRIMARY" name="">
+<part>id</part>
+</key>
+</table>
+<table x="1101" y="352" name="Chat">
+<row name="id" null="1" autoincrement="1">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="game_id" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="games" row="id" />
+</row>
+<row name="team_id" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default><relation table="team" row="id" />
+</row>
+<row name="is_active" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<key type="PRIMARY" name="">
+<part>id</part>
+</key>
+</table>
+<table x="1001" y="551" name="Media">
+<row name="id" null="1" autoincrement="1">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="type" null="1" autoincrement="0">
+<datatype>INTEGER</datatype>
+<default>NULL</default></row>
+<row name="file_name" null="1" autoincrement="0">
 <datatype>INTEGER</datatype>
 <default>NULL</default></row>
 <key type="PRIMARY" name="">
