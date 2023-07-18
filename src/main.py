@@ -7,6 +7,8 @@ from src.teams.router import router as teams_router
 from src.tasks.router import router as tasks_router
 from src.games.router import router as games_router
 from src.chat.router import router as chat_router
+from src.websockets.ws_manager import WSConnectionManager
+from src.websockets.router import router as ws_router
 
 
 @asynccontextmanager
@@ -19,7 +21,9 @@ app = FastAPI(
     title="NightDozor_Backend",
     description="Backend сервиса для проведения игры Ночной Дозор.",
     version="dev-0.3.0",
-    lifespan=lifespan
+    lifespan=lifespan,
+    ws_chat_manager=WSConnectionManager(),
+    ws_events_manager=WSConnectionManager(),
 )
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
@@ -51,4 +55,8 @@ app.include_router(
 app.include_router(
     chat_router,
     tags=["chat"],
+)
+app.include_router(
+    ws_router,
+    tags=["ws"],
 )

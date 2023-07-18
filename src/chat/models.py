@@ -10,9 +10,12 @@ class Chat(Base):
     game_id: Mapped[int] = mapped_column(ForeignKey("Game.id"), nullable=False)
     team_id: Mapped[int] = mapped_column(ForeignKey("Team.id"), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, nullable=False, default=True)
+    team: Mapped["Team"] = relationship(lazy="raise")
 
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    def as_dict(self, exclude: list[str] | None = None):
+        if exclude is None:
+            exclude = []
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns if c.name not in exclude}
 
 
 class Message(Base):
@@ -26,5 +29,7 @@ class Message(Base):
     reply_to: Mapped[int] = mapped_column(BigInteger, nullable=True, default=None)
     user: Mapped["User"] = relationship(lazy="raise")
 
-    def as_dict(self):
-        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+    def as_dict(self, exclude: list[str] | None = None):
+        if exclude is None:
+            exclude = []
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns if c.name not in exclude}
