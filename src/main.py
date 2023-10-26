@@ -1,5 +1,6 @@
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from src.database.db import engine
 from src.auth.auth import auth_backend, fastapi_users
 from src.auth.schemas import UserRead, UserCreate, UserUpdate
@@ -24,6 +25,13 @@ app = FastAPI(
     lifespan=lifespan,
     ws_chat_manager=WSConnectionManager(),
     ws_events_manager=WSConnectionManager(),
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
