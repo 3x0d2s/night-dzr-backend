@@ -37,6 +37,8 @@ async def get_user(token: str, db: AsyncSession) -> UserModel:
 async def websocket_endpoint(websocket: WebSocket,
                              db: Annotated[AsyncSession, Depends(get_db_session)]
                              ):
+    """ Данный веб-сокет служит для  доставки сообщений пользователям. """
+
     await websocket.accept()
     token = await websocket.receive_text()
     user = await get_user(token, db)
@@ -59,6 +61,8 @@ async def websocket_endpoint(websocket: WebSocket,
 async def websocket_endpoint(websocket: WebSocket,
                              db: Annotated[AsyncSession, Depends(get_db_session)]
                              ):
+    """ Данный веб-сокет служит для доставки всех событий пользователям. Является главным. """
+
     await websocket.accept()
     token = await websocket.receive_text()
     user = await get_user(token, db)
