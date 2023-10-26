@@ -8,7 +8,6 @@ from src.teams.router import router as teams_router
 from src.tasks.router import router as tasks_router
 from src.games.router import router as games_router
 from src.chat.router import router as chat_router
-from src.websockets.ws_manager import WSConnectionManager
 from src.websockets.router import router as ws_router
 
 
@@ -21,10 +20,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="NightDozor_Backend",
     description="Backend сервиса для проведения игры Ночной Дозор.",
-    version="dev-0.3.0",
+    version="dev-0.5.0",
     lifespan=lifespan,
-    ws_chat_manager=WSConnectionManager(),
-    ws_events_manager=WSConnectionManager(),
 )
 app.add_middleware(
     CORSMiddleware,

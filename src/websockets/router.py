@@ -7,11 +7,11 @@ from src.database.db import get_db_session
 from src.config import config
 from src.auth.models import User as UserModel
 from src.chat.crud import ChatCrud
-from src.websockets.ws_manager import Connection, WSConnectionManager
+from src.websockets.ws_manager import Connection, WSChatsConnectionManager, WSEventsConnectionManager
 
 router = APIRouter()
-ws_chat_manager = WSConnectionManager()
-ws_events_manager = WSConnectionManager()
+ws_chat_manager = WSChatsConnectionManager()
+ws_events_manager = WSEventsConnectionManager()
 
 
 async def get_user(token: str, db: AsyncSession) -> UserModel:
@@ -70,12 +70,10 @@ async def websocket_endpoint(websocket: WebSocket,
         await websocket.close(status.WS_1011_INTERNAL_ERROR, "authentication failed")
         return
 
-    chat_crud = ChatCrud(db)
-    chat = await chat_crud.get_team_active_chat(user.team.id)
     connection = Connection(user_id=user.id, websocket=websocket)
-    await ws_events_manager.connect(chat.id, connection)
+    await ws_events_manager.connect(user.id, connection)
     try:
         while True:
             _ = await websocket.receive_text()
     except WebSocketDisconnect:
-        ws_events_manager.disconnect(chat.id, connection)
+        ws_events_manager.disconnect(user.id, connection)

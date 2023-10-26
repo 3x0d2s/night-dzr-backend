@@ -63,6 +63,12 @@ class TeamsCrud:
         query = select(User).filter(User.id == user_id).options(selectinload(User.team))
         result = await self.db.execute(query)
         return result.scalars().first()
+
+    async def get_user_data_by_email(self, user_email: str) -> User:
+        """ Возвращает данные пользователя вместе с командой.  """
+        query = select(User).filter(User.email == user_email).options(selectinload(User.team))
+        result = await self.db.execute(query)
+        return result.scalars().first()
     
     async def commit(self):
         await self.db.commit()
