@@ -14,6 +14,30 @@ from src.teams.shemas import TeamRead
 router = APIRouter()
 
 
+@router.get("/games/available",
+            summary="Get available games",
+            response_model=list[GameRead],
+            responses={
+                status.HTTP_200_OK: {
+                    "description": "Successful Response"},
+                status.HTTP_403_FORBIDDEN: {
+                    "description": "Access rights error."},
+                status.HTTP_404_NOT_FOUND: {
+                    "description": "The games was not found."}
+            })
+async def get_available_games(db: Annotated[AsyncSession, Depends(get_db_session)],
+                              user_request_data: Annotated[UserRead, Depends(current_user)]):
+    game_crud = GamesCrud(db)
+    games = await game_crud.get_available_games()
+    if user_request_data.is_superuser is False:
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,
+                            detail=f"You have no rights to this information.")
+    if games is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"The games were not found.")
+    return games
+
+
 @router.post("/games",
              summary="Create game",
              response_model=GameRead,

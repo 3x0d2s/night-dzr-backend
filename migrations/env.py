@@ -10,6 +10,7 @@ from src.auth.models import User
 from src.teams.models import Team
 from src.tasks.models import Task
 from src.games.models import Game
+from src.chat.models import Chat, Message
 from src.database.db import Base
 
 # this is the Alembic Config object, which provides
