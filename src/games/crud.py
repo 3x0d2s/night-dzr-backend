@@ -1,3 +1,5 @@
+from datetime import datetime
+from typing import Sequence
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
@@ -11,6 +13,12 @@ from src.teams.models import Team
 class GamesCrud:
     def __init__(self, db_session: AsyncSession):
         self.db = db_session
+
+    async def get_available_games(self) -> Sequence[Game]:
+        """ Возвращает данные актуальных игр.  """
+        query = select(Game).filter(Game.datetime_end >= datetime.utcnow())
+        result = await self.db.execute(query)
+        return result.scalars().all()
 
     async def get_game_data(self, game_id: int) -> Game:
         """ Возвращает данные игры.  """
